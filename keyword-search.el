@@ -54,6 +54,8 @@
 (require 'browse-url)
 
 (defvar keyword-search-alist
+  "A alist of pairs (KEYWORD . URL) where KEYWORD is a keyword string
+and URL including '%s' is the search url."
   '(("debpkg" . "http://packages.debian.org/search?keywords=%s")
     ("emacswiki" . "http://www.emacswiki.org/cgi-bin/wiki?search=%s")
     ("github" . "https://github.com/search?q=%s")
@@ -76,7 +78,10 @@
     ("youtube" . "http://www.youtube.com/results?search_query=%s")
     ))
 
-(defvar keyword-search-default "google")
+(defvar keyword-search-default
+  "Default keyword used by `keyword-search' and `keyword-search-quick'
+if none given."
+  "google")
 
 (defun keyword-search (key query &optional new-window)
   "Reads a keyword KEY from `keyword-search-alist' with completion
