@@ -5,7 +5,7 @@
 ;; Created: 29 Jun 2013
 ;; Keywords: web, search, keyword
 ;; X-URL: https://github.com/juhp/keyword-search
-;; Version: 0.1
+;; Version: 0.2
 
 ;; This file is not part of GNU Emacs.
 
@@ -29,10 +29,19 @@
 ;; (maybe if a complete file had been posted there
 ;; I would not have forked this off.
 
+;; It provides two functions `keyword-search' and `keyword-search-quick'.
+;;
+;; `keyword-search': provides completion on keywords and then reads
+;; a search term defaulting to the symbol at point.
+;;
+;; `keyword-search-quick': reads a query in one line if it does not
+;; start with a keyword then it uses `keyword-search-default'.
+
 ;; To use:
 
 ;; (load "keyword-search")
-;; (define-key mode-specific-map [?B] 'keyword-search)
+;; (define-key mode-specific-map [?b] 'keyword-search)
+;; (define-key mode-specific-map [?B] 'keyword-search-quick)
 
 ;; Example of a direct search binding:
 ;;
