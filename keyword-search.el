@@ -27,7 +27,7 @@
 ;; This is based on the code snippets at
 ;; http://www.emacswiki.org/emacs/BrowseAproposURL
 ;; (maybe if a complete file had been posted there
-;; I would not have forked this off.
+;; I would not have forked this off).
 
 ;; It provides two functions `keyword-search' and `keyword-search-quick'.
 ;;
@@ -35,7 +35,7 @@
 ;; a search term defaulting to the symbol at point.
 ;;
 ;; `keyword-search-quick': reads a query in one line if it does not
-;; start with a keyword then it uses `keyword-search-default'.
+;; start with a keyword it uses `keyword-search-default'.
 
 ;; To use:
 
