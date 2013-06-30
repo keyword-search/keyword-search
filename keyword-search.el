@@ -54,45 +54,55 @@
 (require 'browse-url)
 
 (defvar keyword-search-alist
-  '(("google" .
-     "http://www.google.com/search?q=%s")
-    ("google-lucky" .
-     "http://www.google.com/search?btnI=I%27m+Feeling+Lucky&q=%s")
-    ("google-linux" .
-     "http://www.google.com/linux?q=%s")
-    ("google-images" .
-     "http://images.google.com/images?sa=N&tab=wi&q=%s")
-    ("google-groups" .
-     "http://groups.google.com/groups?q=%s")
-    ("google-directory" .
-     "http://www.google.com/search?&sa=N&cat=gwd/Top&tab=gd&q=%s")
-    ("github" .
-     "https://github.com/search?q=%s")
-    ("google-news" .
-     "http://news.google.com/news?sa=N&tab=dn&q=%s")
-    ("slashdot" .
-     "http://www.osdn.com/osdnsearch.pl?site=Slashdot&query=%s")        
-    ("emacswiki" .
-     "http://www.emacswiki.org/cgi-bin/wiki?search=%s")
-    ("arda" .
-     "http://www.glyphweb.com/arda/")
-    ("hayoo" .
-     "http://holumbus.fh-wedel.de/hayoo/hayoo.html?query=%s")
+  '(("debpkg" . "http://packages.debian.org/search?keywords=%s")
+    ("emacswiki" . "http://www.emacswiki.org/cgi-bin/wiki?search=%s")
+    ("github" . "https://github.com/search?q=%s")
+    ("google" . "http://www.google.com/search?q=%s")
+    ("google-books" . "https://www.google.com/search?q=%s&tbm=bks")
+    ("google-lucky" . "http://www.google.com/search?btnI=I%27m+Feeling+Lucky&q=%s")
+    ("google-linux" . "http://www.google.com/linux?q=%s")
+    ("google-images" . "http://images.google.com/images?sa=N&tab=wi&q=%s")
+    ("google-groups" . "http://groups.google.com/groups?q=%s")
+    ("google-directory" . "http://www.google.com/search?&sa=N&cat=gwd/Top&tab=gd&q=%s")
+    ("google-news" . "http://news.google.com/news?sa=N&tab=dn&q=%s")
+    ("hackage" . "http://hackage.haskell.org/package/%s")
+    ("hayoo" . "http://holumbus.fh-wedel.de/hayoo/hayoo.html?query=%s")
+    ("hdiff" . "http://hdiff.luite.com/cgit/%s")
+    ("koji" . "http://koji.fedoraproject.org/koji/search?match=glob&type=package&terms=%s")
+    ("slashdot" . "http://www.osdn.com/osdnsearch.pl?site=Slashdot&query=%s")
+    ("ubupkg" . "http://packages.ubuntu.com/search?keywords=%s")
+    ("wikipedia" . "http://en.wikipedia.org/wiki/%s")
+    ("yahoo" . "http://search.yahoo.com/search?p=%s")
+    ("youtube" . "http://www.youtube.com/results?search_query=%s")
     ))
 
 (defvar keyword-search-default "google")
 
-(defun keyword-search (key &optional new-window)
+(defun keyword-search (key query &optional new-window)
+  "Reads a keyword KEY from `keyword-search-alist' with completion
+and then reads a search term QUERY defaulting to the symbol at point.
+It then does a websearch of the url associated to KEY using `browse-url'."
   (interactive
      (list (completing-read
 	    (format "Keyword search (%s): " keyword-search-default)
-	    apropos-url-alist nil t nil nil keyword-search-default)))
-  (let ((thing (thing-at-point 'symbol)))
-    (setq thing
-	  (read-string
-	   (if thing
-	       (format (concat key " (%s): " ) thing)
-	     (concat key ": " ))
-	   nil nil thing))
-    (let ((url (cdr (assoc key apropos-url-alist))))
-      (browse-url (format url thing) new-window))))
+	    apropos-url-alist nil t nil nil keyword-search-default)
+	   (let ((thing (thing-at-point 'symbol)))
+	     (read-string
+	      (if thing
+		  (format (concat key " (%s): " ) thing)
+		(concat key ": " ))
+	      nil nil thing))))
+  (let ((url (cdr (assoc key apropos-url-alist))))
+    (browse-url (format url query) new-window)))
+
+(defun keyword-search-quick (text)
+  "A wrapper of `keyword-search' which reads the keyword and
+search query in a single input."
+  (interactive
+   (list (read-string "Keyword search quick: ")))
+  (let* ((words (split-string-and-unquote text))
+	 (key (car words))
+	 (keywordp (assoc key apropos-url-alist))
+	 (keyword (if keywordp key
+		    keyword-search-default)))
+    (keyword-search keyword (combine-and-quote-strings (if keywordp (cdr words) words)))))
