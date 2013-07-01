@@ -111,3 +111,5 @@ search query in a single input."
 	 (keyword (if keywordp key
 		    keyword-search-default)))
     (keyword-search keyword (combine-and-quote-strings (if keywordp (cdr words) words)))))
+
+(provide 'keyword-search)
