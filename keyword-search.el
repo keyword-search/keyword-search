@@ -29,10 +29,14 @@
 ;; (maybe if a complete file had been posted there
 ;; I would not have forked this off).
 
-;; It provides two functions `keyword-search' and `keyword-search-quick'.
+;; It provides 3 functions `keyword-search', `keyword-search-at-point'
+;; and `keyword-search-quick'.
 ;;
 ;; `keyword-search': provides completion on keywords and then reads
 ;; a search term defaulting to the symbol at point.
+;;
+;; `keyword-search-at-point': reads a keyword with completion and then
+;; searchs with the symbol at point.
 ;;
 ;; `keyword-search-quick': reads a query in one line if it does not
 ;; start with a keyword it uses `keyword-search-default'.
@@ -90,15 +94,26 @@ It then does a websearch of the url associated to KEY using `browse-url'."
   (interactive
      (list (completing-read
 	    (format "Keyword search (%s): " keyword-search-default)
-	    apropos-url-alist nil t nil nil keyword-search-default)
+	    keyword-search-alist nil t nil nil keyword-search-default)
 	   (let ((thing (thing-at-point 'symbol)))
 	     (read-string
 	      (if thing
 		  (format (concat key " (%s): " ) thing)
 		(concat key ": " ))
 	      nil nil thing))))
-  (let ((url (cdr (assoc key apropos-url-alist))))
+  (let ((url (cdr (assoc key keyword-search-alist))))
     (browse-url (format url query) new-window)))
+
+(defun keyword-search-at-point (key &optional new-window)
+  "Reads a keyword KEY from `keyword-search-alist' with completion
+and does does a websearch of the symbol at point using `browse-url'."
+  (interactive
+     (list (completing-read
+	    (format "Keyword search (%s): " keyword-search-default)
+	    keyword-search-alist nil t nil nil keyword-search-default)))
+  (let ((thing (thing-at-point 'symbol))
+	(url (cdr (assoc key keyword-search-alist))))
+    (browse-url (format url thing) new-window)))
 
 (defun keyword-search-quick (text)
   "A wrapper of `keyword-search' which reads the keyword and
@@ -107,7 +122,7 @@ search query in a single input."
    (list (read-string "Keyword search quick: ")))
   (let* ((words (split-string-and-unquote text))
 	 (key (car words))
-	 (keywordp (assoc key apropos-url-alist))
+	 (keywordp (assoc key keyword-search-alist))
 	 (keyword (if keywordp key
 		    keyword-search-default)))
     (keyword-search keyword (combine-and-quote-strings (if keywordp (cdr words) words)))))
