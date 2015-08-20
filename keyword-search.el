@@ -98,11 +98,18 @@ and URL including '%s' is the search url."
   )
 
 (defcustom keyword-search-default "google"
-  "Default search engine used by `keyword-search', `keyword-search-at-point', `keyword-search-quick'
-and `keyword-search-region' if none given."
+  "Default search engine used by `keyword-search' and `keyword-search-quick'
+if none given."
   :type 'string
   :group 'keyword-search
   )
+
+(defun keyword-search-get-query ()
+  "Return the selected region (if any) or the symbol at point.
+This function was copied from `engine-mode.el'."
+  (if (use-region-p)
+      (buffer-substring (region-beginning) (region-end))
+    (thing-at-point 'symbol)))
 
 (defun keyword-search (key query &optional new-window)
   "Reads a keyword KEY from `keyword-search-alist' with completion
@@ -114,7 +121,7 @@ It then does a websearch of the url associated to KEY using `browse-url'."
 	   (format "Keyword search (default %s): " keyword-search-default)
 	   keyword-search-alist nil t nil nil keyword-search-default)))
      (list key
-	   (let ((thing (thing-at-point 'symbol)))
+	   (let ((thing (keyword-search-get-query)))
 	     (read-string
 	      (if thing
 		  (format (concat key " (%s): " ) thing)
@@ -127,10 +134,10 @@ It then does a websearch of the url associated to KEY using `browse-url'."
   "Reads a keyword KEY from `keyword-search-alist' with completion
 and does a websearch of the symbol at point using `browse-url'."
   (interactive
-     (list (completing-read
-	    (format "Keyword search at point (default %s): " keyword-search-default)
-	    keyword-search-alist nil t nil nil keyword-search-default)))
-  (let ((thing (thing-at-point 'symbol))
+   (list (completing-read
+	  (format "Keyword search at point (default %s): " keyword-search-default)
+	  keyword-search-alist nil t nil nil keyword-search-default)))
+  (let ((thing (keyword-search-get-query))
 	(url (cdr (assoc key keyword-search-alist))))
     (browse-url (format url thing) new-window)))
 
@@ -145,17 +152,5 @@ search query in a single input."
 	 (keyword (if keywordp key
 		    keyword-search-default)))
     (keyword-search keyword (combine-and-quote-strings (if keywordp (cdr words) words)))))
-
-(defun keyword-search-region (key start end &optional new-window)
-  "Search term in region."
-  (interactive (let ((key
-		      (completing-read
-		       (format "Keyword search region (default %s): " keyword-search-default)
-		       keyword-search-alist nil t nil nil keyword-search-default)))
-		 (list key (region-beginning) (region-end))))
-  (save-excursion
-    (let ((url (cdr (assoc key keyword-search-alist)))
-	  (query (buffer-substring start end)))
-      (browse-url (format url query) new-window))))
 
 (provide 'keyword-search)
