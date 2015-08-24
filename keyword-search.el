@@ -57,62 +57,87 @@
 
 (require 'browse-url)
 
-(defvar keyword-search-alist
-  '(("debpkg" . "http://packages.debian.org/search?keywords=%s")
+(defcustom keyword-search-alist
+  '(
+    ("alc" . "http://eow.alc.co.jp/search?q=%s")
+    ("cookpad-ja" . "http://cookpad.com/search/%s")
+    ("cookpad-us" . "https://cookpad.com/us/search/%s")
+    ("debpkg" . "http://packages.debian.org/search?keywords=%s")
+    ("dict-org" . "http://www.dict.org/bin/Dict?Form=Dict2&Database=*&Query=%s")
     ("emacswiki" . "http://www.emacswiki.org/cgi-bin/wiki?search=%s")
+    ("foldoc" . "http://foldoc.org/%s")
     ("github" . "https://github.com/search?q=%s")
     ("google" . "http://www.google.com/search?q=%s")
     ("google-books" . "https://www.google.com/search?q=%s&tbm=bks")
+    ("google-finance" . "http://www.google.com/finance?q=%s")
     ("google-lucky" . "http://www.google.com/search?btnI=I%27m+Feeling+Lucky&q=%s")
     ("google-linux" . "http://www.google.com/linux?q=%s")
     ("google-images" . "http://images.google.com/images?sa=N&tab=wi&q=%s")
     ("google-groups" . "http://groups.google.com/groups?q=%s")
     ("google-directory" . "http://www.google.com/search?&sa=N&cat=gwd/Top&tab=gd&q=%s")
     ("google-news" . "http://news.google.com/news?sa=N&tab=dn&q=%s")
+    ("google-translate" . "http://translate.google.com/?source=osdd#auto|auto|%s")
     ("hackage" . "http://hackage.haskell.org/package/%s")
     ("hayoo" . "http://holumbus.fh-wedel.de/hayoo/hayoo.html?query=%s")
     ("hdiff" . "http://hdiff.luite.com/cgit/%s")
     ("koji" . "http://koji.fedoraproject.org/koji/search?match=glob&type=package&terms=%s")
     ("slashdot" . "http://www.osdn.com/osdnsearch.pl?site=Slashdot&query=%s")
     ("ubupkg" . "http://packages.ubuntu.com/search?keywords=%s")
+    ("weblio-en-ja" . "http://ejje.weblio.jp/content/%s")
     ("wikipedia" . "http://en.wikipedia.org/wiki/%s")
+    ("wikipedia-ja" . "http://ja.wikipedia.org/wiki/%s")
     ("yahoo" . "http://search.yahoo.com/search?p=%s")
     ("youtube" . "http://www.youtube.com/results?search_query=%s")
     )
-  "A alist of pairs (KEYWORD . URL) where KEYWORD is a keyword string
+  "An alist of pairs (KEYWORD . URL) where KEYWORD is a keyword string
 and URL including '%s' is the search url."
+  :type '(alist
+	  :key-type (string :tag "Name")
+	  :value-type (string :tag "URL"))
+  :group 'keyword-search
   )
 
-(defvar keyword-search-default
-  "Default keyword used by `keyword-search' and `keyword-search-quick'
+(defcustom keyword-search-default "google"
+  "Default search engine used by `keyword-search' and `keyword-search-quick'
 if none given."
-  "google")
+  :type 'string
+  :group 'keyword-search
+  )
+
+(defun keyword-search-get-query ()
+  "Return the selected region (if any) or the symbol at point.
+This function was copied from `engine-mode.el'."
+  (if (use-region-p)
+      (buffer-substring (region-beginning) (region-end))
+    (thing-at-point 'symbol)))
 
 (defun keyword-search (key query &optional new-window)
   "Reads a keyword KEY from `keyword-search-alist' with completion
 and then reads a search term QUERY defaulting to the symbol at point.
 It then does a websearch of the url associated to KEY using `browse-url'."
   (interactive
-     (list (completing-read
-	    (format "Keyword search (%s): " keyword-search-default)
-	    keyword-search-alist nil t nil nil keyword-search-default)
-	   (let ((thing (thing-at-point 'symbol)))
+   (let ((key
+	  (completing-read
+	   (format "Keyword search (default %s): " keyword-search-default)
+	   keyword-search-alist nil t nil nil keyword-search-default)))
+     (list key
+	   (let ((thing (keyword-search-get-query)))
 	     (read-string
 	      (if thing
 		  (format (concat key " (%s): " ) thing)
 		(concat key ": " ))
-	      nil nil thing))))
+	      nil nil thing)))))
   (let ((url (cdr (assoc key keyword-search-alist))))
     (browse-url (format url query) new-window)))
 
 (defun keyword-search-at-point (key &optional new-window)
   "Reads a keyword KEY from `keyword-search-alist' with completion
-and does does a websearch of the symbol at point using `browse-url'."
+and does a websearch of the symbol at point using `browse-url'."
   (interactive
-     (list (completing-read
-	    (format "Keyword search (%s): " keyword-search-default)
-	    keyword-search-alist nil t nil nil keyword-search-default)))
-  (let ((thing (thing-at-point 'symbol))
+   (list (completing-read
+	  (format "Keyword search at point (default %s): " keyword-search-default)
+	  keyword-search-alist nil t nil nil keyword-search-default)))
+  (let ((thing (keyword-search-get-query))
 	(url (cdr (assoc key keyword-search-alist))))
     (browse-url (format url thing) new-window)))
 
