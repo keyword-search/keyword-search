@@ -2,9 +2,11 @@
 ;;
 ;; Authors: hugo and Richard Riley
 ;; Maintainer: Jens Petersen
+;; Provisional maintainer: Akihiro Kuroiwa
 ;; Created: 29 Jun 2013
 ;; Keywords: web, search, keyword
 ;; X-URL: https://github.com/juhp/keyword-search
+;; URL: https://github.com/keyword-search/keyword-search
 ;; Version: 0.2
 
 ;; This file is not part of GNU Emacs.
@@ -55,8 +57,11 @@
 ;;        (interactive)
 ;;        (keyword-search "hayoo"))))
 
+;;; Code:
+
 (require 'browse-url)
 
+;;;###autoload
 (defcustom keyword-search-alist
   '(
     ("alc" . "http://eow.alc.co.jp/search?q=%s")
@@ -89,7 +94,7 @@
     ("yahoo" . "http://search.yahoo.com/search?p=%s")
     ("youtube" . "http://www.youtube.com/results?search_query=%s")
     )
-  "An alist of pairs (KEYWORD . URL) where KEYWORD is a keyword string
+  "An alist of pairs (KEYWORD . URL) where KEYWORD is a keyword string \
 and URL including '%s' is the search url."
   :type '(alist
 	  :key-type (string :tag "Name")
@@ -97,8 +102,9 @@ and URL including '%s' is the search url."
   :group 'keyword-search
   )
 
+;;;###autoload
 (defcustom keyword-search-default "google"
-  "Default search engine used by `keyword-search' and `keyword-search-quick'
+  "Default search engine used by `keyword-search' and `keyword-search-quick' \
 if none given."
   :type 'string
   :group 'keyword-search
@@ -111,10 +117,19 @@ This function was copied from `engine-mode.el'."
       (buffer-substring (region-beginning) (region-end))
     (thing-at-point 'symbol)))
 
+;;;###autoload
 (defun keyword-search (key query &optional new-window)
-  "Reads a keyword KEY from `keyword-search-alist' with completion
-and then reads a search term QUERY defaulting to the symbol at point.
-It then does a websearch of the url associated to KEY using `browse-url'."
+  "Read a keyword KEY from `keyword-search-alist' with completion \
+and then read a search term QUERY defaulting to the symbol at point.
+It then does a websearch of the url associated to KEY using `browse-url'.
+
+When called interactively, if variable `browse-url-new-window-flag' is
+non-nil, load the document in a new window, if possible, otherwise use
+a random existing one.  A non-nil interactive prefix argument reverses
+the effect of `browse-url-new-window-flag'.
+
+When called non-interactively, optional third argument NEW-WINDOW is
+used instead of `browse-url-new-window-flag'."
   (interactive
    (let ((key
 	  (completing-read
@@ -130,9 +145,18 @@ It then does a websearch of the url associated to KEY using `browse-url'."
   (let ((url (cdr (assoc key keyword-search-alist))))
     (browse-url (format url query) new-window)))
 
+;;;###autoload
 (defun keyword-search-at-point (key &optional new-window)
-  "Reads a keyword KEY from `keyword-search-alist' with completion
-and does a websearch of the symbol at point using `browse-url'."
+  "Read a keyword KEY from `keyword-search-alist' with completion \
+and does a websearch of the symbol at point using `browse-url'.
+
+When called interactively, if variable `browse-url-new-window-flag' is
+non-nil, load the document in a new window, if possible, otherwise use
+a random existing one.  A non-nil interactive prefix argument reverses
+the effect of `browse-url-new-window-flag'.
+
+When called non-interactively, optional second argument NEW-WINDOW is
+used instead of `browse-url-new-window-flag'."
   (interactive
    (list (completing-read
 	  (format "Keyword search at point (default %s): " keyword-search-default)
@@ -141,9 +165,10 @@ and does a websearch of the symbol at point using `browse-url'."
 	(url (cdr (assoc key keyword-search-alist))))
     (browse-url (format url thing) new-window)))
 
+;;;###autoload
 (defun keyword-search-quick (text)
-  "A wrapper of `keyword-search' which reads the keyword and
-search query in a single input."
+  "A wrapper of `keyword-search' which read the keyword and \
+search query in a single input as argument TEXT from the minibuffer."
   (interactive
    (list (read-string "Keyword search quick: ")))
   (let* ((words (split-string-and-unquote text))
@@ -154,3 +179,4 @@ search query in a single input."
     (keyword-search keyword (combine-and-quote-strings (if keywordp (cdr words) words)))))
 
 (provide 'keyword-search)
+;;; keyword-search.el ends here
