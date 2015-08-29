@@ -86,6 +86,7 @@
     (hackage . "http://hackage.haskell.org/package/%s")
     (hayoo . "http://holumbus.fh-wedel.de/hayoo/hayoo.html?query=%s")
     (hdiff . "http://hdiff.luite.com/cgit/%s")
+    (jisho-org . "http://jisho.org/search/%s")
     (koji . "http://koji.fedoraproject.org/koji/search?match=glob&type=package&terms=%s")
     (slashdot . "http://www.osdn.com/osdnsearch.pl?site=Slashdot&query=%s")
     (ubupkg . "http://packages.ubuntu.com/search?keywords=%s")
@@ -115,8 +116,7 @@ if none given."
   "Return the selected region (if any) or the symbol at point.
 This function was copied from `engine-mode.el'."
   (if (use-region-p)
-      (url-hexify-string
-       (buffer-substring (region-beginning) (region-end)))
+      (buffer-substring (region-beginning) (region-end))
     (thing-at-point 'symbol)))
 
 ;;;###autoload
@@ -145,7 +145,7 @@ used instead of `browse-url-new-window-flag'."
 		(concat key ": " ))
 	      nil nil thing)))))
   (let ((url (cdr (assoc (intern-soft key) keyword-search-alist))))
-    (browse-url (format url query) new-window)))
+    (browse-url (format url (url-hexify-string query)) new-window)))
 
 ;;;###autoload
 (defun keyword-search-at-point (key &optional new-window)
@@ -165,7 +165,7 @@ used instead of `browse-url-new-window-flag'."
 	  keyword-search-alist nil t nil nil (symbol-name keyword-search-default))))
   (let ((thing (keyword-search-get-query))
 	(url (cdr (assoc (intern-soft key) keyword-search-alist))))
-    (browse-url (format url thing) new-window)))
+    (browse-url (format url (url-hexify-string thing)) new-window)))
 
 ;;;###autoload
 (defun keyword-search-quick (text)
@@ -178,7 +178,8 @@ search query in a single input as argument TEXT from the minibuffer."
 	 (keywordp (assoc (intern-soft key) keyword-search-alist))
 	 (keyword (if keywordp key
 		    keyword-search-default)))
-    (keyword-search (intern-soft keyword) (combine-and-quote-strings (if keywordp (cdr words) words)))))
+    (keyword-search (intern-soft keyword)
+		     (combine-and-quote-strings (if keywordp (cdr words) words)))))
 
 (provide 'keyword-search)
 ;;; keyword-search.el ends here
