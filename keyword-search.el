@@ -7,7 +7,7 @@
 ;; Keywords: web, search, keyword
 ;; X-URL: https://github.com/juhp/keyword-search
 ;; URL: https://github.com/keyword-search/keyword-search
-;; Version: 0.2
+;; Version: 0.2.1
 
 ;; This file is not part of GNU Emacs.
 
@@ -116,7 +116,11 @@ if none given."
   "Return the selected region (if any) or the symbol at point.
 This function was copied from `engine-mode.el'."
   (if (use-region-p)
-      (buffer-substring (region-beginning) (region-end))
+      (replace-regexp-in-string
+       "^\s-*\\|\s-*$" ""
+       (replace-regexp-in-string
+	"[\u3000\s\t\n]+" "\s"
+	(buffer-substring (region-beginning) (region-end))))
     (thing-at-point 'symbol)))
 
 ;;;###autoload
@@ -179,7 +183,7 @@ search query in a single input as argument TEXT from the minibuffer."
 	 (keyword (if keywordp key
 		    keyword-search-default)))
     (keyword-search (intern-soft keyword)
-		     (combine-and-quote-strings (if keywordp (cdr words) words)))))
+		    (combine-and-quote-strings (if keywordp (cdr words) words)))))
 
 (provide 'keyword-search)
 ;;; keyword-search.el ends here
