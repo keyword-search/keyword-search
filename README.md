@@ -34,3 +34,65 @@ Usage
 1. <kbd>M-x keyword-search [RET]</kbd>
 2. Choose search engine. <kbd>[TAB]</kbd> will autocomplete it.
 3. Search query will be read from symbol at point, region or string in the minibuffer.
+
+keyword-search-extra-mode
+-------------------------
+
+Mode for an alist of extra language services.
+There are so many languages that it will be late at load time
+if this mode is ON.
+It takes 90 seconds to load it on an old computer.
+
+Toggle ON/OFF:
+
+* <kbd>M-x keyword-search-extra-mode [RET]</kbd>
+
+keyword-search-dessert-stomach-mode
+-----------------------------------
+
+User-customizable mode.
+
+```lisp
+(require 'keyword-search-extra)
+
+(defun keyword-search-my-fun ()
+  "G7 of greenhouse gas emitters."
+  (keyword-search-meta-alist
+   (let (
+	 (alist '(
+		  ("greenhouse-gas-%s" . "http://%s.greenhouse-gas/%%s")
+		  ))
+	 (locale '(
+		   "de"
+		   "in"
+		   "ja"
+		   "kr"
+		   "ru"
+		   "us"
+		   "zh-CN"
+		   ))
+	 (value)  ; make sure list starts empty
+	 )
+     (dolist (site-element alist value)
+       (let (
+	     (car-element (car site-element))
+	     (cdr-element (cdr site-element))
+	     )
+	 (cond
+	  ((string-equal car-element "greenhouse-gas-%s")
+	   (dolist (l locale value)
+	     (setq value (add-to-list 'value
+				      (cons
+				       (intern
+					(format car-element l))
+				       (format cdr-element l))
+				      t))))))))))
+
+(add-hook 'keyword-search-dessert-stomach-mode-hook 'keyword-search-my-fun nil)
+(keyword-search-dessert-stomach-mode t)
+```
+
+Demo Video
+----------
+
+* [Web Search from the Emacs](https://www.youtube.com/watch?v=IU4omPkG91M)

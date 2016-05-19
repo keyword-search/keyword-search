@@ -9,6 +9,11 @@
 ;; URL: https://github.com/keyword-search/keyword-search
 ;; Version: 0.2.1
 
+;; Contributors:
+;;  Hong Xu
+;;  Steve Purcell
+;;  Syohei YOSHIDA
+
 ;; This file is not part of GNU Emacs.
 
 ;; This code is free software; you can redistribute it and/or modify
@@ -65,6 +70,7 @@
 (defcustom keyword-search-alist
   '(
     (alc . "http://eow.alc.co.jp/search?q=%s")
+    (askubuntu . "http://askubuntu.com/search?q=%s")
     (cookpad-ja . "http://cookpad.com/search/%s")
     (cookpad-us . "https://cookpad.com/us/search/%s")
     (debpkg . "http://packages.debian.org/search?keywords=%s")
@@ -81,18 +87,32 @@
     (google-groups . "http://groups.google.com/groups?q=%s")
     (google-directory . "http://www.google.com/search?&sa=N&cat=gwd/Top&tab=gd&q=%s")
     (google-news . "http://news.google.com/news?sa=N&tab=dn&q=%s")
+    (google-scholar . "https://scholar.google.com/scholar?q=%s")
     (google-translate . "http://translate.google.com/?source=osdd#auto|auto|%s")
     (google-translate-en-ja . "http://translate.google.com/?source=osdd#en|ja|%s")
     (google-translate-ja-en . "http://translate.google.com/?source=osdd#ja|en|%s")
+    (grabcad . "https://grabcad.com/library?per_page=20&query=%s")
     (hackage . "http://hackage.haskell.org/package/%s")
     (hayoo . "http://holumbus.fh-wedel.de/hayoo/hayoo.html?query=%s")
     (hdiff . "http://hdiff.luite.com/cgit/%s")
+    (instagram-account . "https://www.instagram.com/$s")
+    (instagram-tags . "https://www.instagram.com/explore/tags/%s")
     (jisho-org . "http://jisho.org/search/%s")
     (koji . "http://koji.fedoraproject.org/koji/search?match=glob&type=package&terms=%s")
+    (melpa . "http://melpa.org/#/%s")
+    (pypi . "https://pypi.python.org/pypi?%%3Aaction=search&term=%s&submit=search")
+    (readthedocs-org . "https://readthedocs.org/search/?q=%s")
     (slashdot . "http://www.osdn.com/osdnsearch.pl?site=Slashdot&query=%s")
     (startpage . "https://startpage.com/do/search?cat=web&query=%s")
+    (stackexchange-emacs . "http://emacs.stackexchange.com/search?q=%s")
+    (starwars-wikia . "http://starwars.wikia.com/wiki/Special:Search?search=%s&go=&fulltext=Search")
+    (twitter-hashtag . "https://twitter.com/hashtag/%s")
+    (twitter-search . "https://twitter.com/search?q=%s&src=typd")
     (ubupkg . "http://packages.ubuntu.com/search?keywords=%s")
     (weblio-en-ja . "http://ejje.weblio.jp/content/%s")
+    (whotwi-ar . "http://ar.whotwi.com/%s")
+    (whotwi-en . "http://en.whotwi.com/%s")
+    (whotwi-ja . "http://ja.whotwi.com/%s")
     (wikipedia . "http://en.wikipedia.org/wiki/%s")
     (wikipedia-ja . "http://ja.wikipedia.org/wiki/%s")
     (yahoo . "http://search.yahoo.com/search?p=%s")
@@ -118,11 +138,20 @@ if none given."
   "Return the selected region (if any) or the symbol at point.
 This function was copied from `engine-mode.el'."
   (if (use-region-p)
-      (replace-regexp-in-string
-       "^\s-*\\|\s-*$" ""
-       (replace-regexp-in-string
-	"[\u3000\s\t\n]+" "\s"
-	(buffer-substring (region-beginning) (region-end))))
+      (let (
+	    (r-list
+	     '(
+	       ("[\u3000 \t\n]+" . " ")
+	       ("^\\s-*\\|\\s-*$" . "")
+	       ("\\(\\s(\\)\\s-*\\(\\s(\\)" . "\\1\\2")
+	       ("\\(\\s)\\)\\s-*\\(\\s)\\)" . "\\1\\2")
+	       ("\\(\\s(\\)\\s-*\\(\\s(\\)" . "\\1\\2")
+	       ("\\(\\s)\\)\\s-*\\(\\s)\\)" . "\\1\\2")
+	       ))
+	    (value (buffer-substring (region-beginning) (region-end)))
+	    )
+	(dolist (element r-list value)
+	  (setq value (replace-regexp-in-string (car element) (cdr element) value))))
     (thing-at-point 'symbol)))
 
 ;;;###autoload
