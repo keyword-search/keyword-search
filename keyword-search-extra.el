@@ -36,8 +36,9 @@
 ;; `keyword-search-extra-mode': concatenates extra language services when it is ON.
 ;; It takes a long time to load it.
 
-;; `keyword-search-dessert-stomach-mode': executes your codes and functions added
-;; in `keyword-search-dessert-stomach-mode-hook'.
+;; `keyword-search-dessert-stomach-mode': executes your functions added
+;; in `keyword-search-dessert-stomach-mode-hook' or
+;; `keyword-search-dessert-stomach-mode-toggle-hook'.
 
 ;; To use:
 
@@ -55,6 +56,9 @@
 
 (defvar keyword-search-dessert-stomach-mode-hook nil
   "Hook for `keyword-search-dessert-stomach-mode'.")
+
+(defvar keyword-search-dessert-stomach-mode-toggle-hook nil
+  "Hook for toggling `keyword-search-dessert-stomach-mode'.")
 
 ;;;###autoload
 (define-minor-mode keyword-search-extra-mode
@@ -75,10 +79,16 @@ It takes 90 seconds to load it on an old computer.
 ;;;###autoload
 (define-minor-mode keyword-search-dessert-stomach-mode
   "User-customizable mode.
-You can append functions to `keyword-search-dessert-stomach-mode-hook' by `add-hook'."
+You can append functions to `keyword-search-dessert-stomach-mode-hook' by `add-hook'.
+
+If you want to toggle ON/OFF this mode, please append functions to \
+`keyword-search-dessert-stomach-mode-toggle-hook'."
   :lighter " k-stomach"
   :global t
-  :group 'keyword-search)
+  :group 'keyword-search
+  (if keyword-search-dessert-stomach-mode
+      (run-hooks 'keyword-search-dessert-stomach-mode-toggle-hook)
+    (custom-reevaluate-setting 'keyword-search-alist)))
 
 (defun keyword-search-locale-alist ()
   "Using dolist, append locale association list."
@@ -558,7 +568,7 @@ You can append functions to `keyword-search-dessert-stomach-mode-hook' by `add-h
 				      t))))))))))
 
 (defun keyword-search-meta-alist (additional-alist)
-  "Concatenates `keyword-search-alist' with ADDITIONAL-ALIST and remove duplicates."
+  "Concatenate `keyword-search-alist' with ADDITIONAL-ALIST and remove duplicates."
   (setq keyword-search-alist
 	(cl-remove-if-not 'identity
 			  (cl-remove-duplicates

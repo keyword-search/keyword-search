@@ -1,3 +1,17 @@
+<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-generate-toc again -->
+**Table of Contents**
+
+- [keyword-search.el](#keyword-searchel)
+    - [Installation](#installation)
+    - [Basic Configuration](#basic-configuration)
+    - [Usage](#usage)
+    - [keyword-search-extra-mode](#keyword-search-extra-mode)
+    - [keyword-search-dessert-stomach-mode](#keyword-search-dessert-stomach-mode)
+    - [Demo Video](#demo-video)
+
+<!-- markdown-toc end -->
+
+
 keyword-search.el
 =================
 
@@ -90,6 +104,14 @@ User-customizable mode.
 
 (add-hook 'keyword-search-dessert-stomach-mode-hook 'keyword-search-my-fun nil)
 (keyword-search-dessert-stomach-mode t)
+```
+
+If you want to toggle ON/OFF this mode, please append functions to
+```keyword-search-dessert-stomach-mode-toggle-hook```:
+
+```lisp
+(add-hook 'keyword-search-dessert-stomach-mode-toggle-hook
+	  'keyword-search-my-fun)
 ```
 
 Demo Video
