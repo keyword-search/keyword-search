@@ -106,8 +106,8 @@ User-customizable mode.
 (keyword-search-dessert-stomach-mode t)
 ```
 
-If you want to toggle ON/OFF this mode, please append functions to
-```keyword-search-dessert-stomach-mode-toggle-hook```.
+If you want to toggle ON/OFF this mode, please append functions
+to `keyword-search-dessert-stomach-mode-toggle-hook`:
 
 ```lisp
 (add-hook 'keyword-search-dessert-stomach-mode-toggle-hook
