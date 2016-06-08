@@ -70,13 +70,13 @@
 (defcustom keyword-search-alist
   '(
     (alc . "http://eow.alc.co.jp/search?q=%s")
-    (askubuntu . "http://askubuntu.com/search?q=%s")
     (cookpad-ja . "http://cookpad.com/search/%s")
     (cookpad-us . "https://cookpad.com/us/search/%s")
     (debpkg . "http://packages.debian.org/search?keywords=%s")
+    (debpkg-contents . "https://packages.debian.org/file:%s")
     (dict-org . "http://www.dict.org/bin/Dict?Form=Dict2&Database=*&Query=%s")
     (duckduckgo . "https://duckduckgo.com/?q=%s")
-    (emacswiki . "http://www.emacswiki.org/cgi-bin/wiki?search=%s")
+    (emacswiki . "https://duckduckgo.com/?q=%s+site%%3Aemacswiki.org&ia=web")
     (foldoc . "http://foldoc.org/%s")
     (github . "https://github.com/search?q=%s")
     (google . "http://www.google.com/search?q=%s")
@@ -91,12 +91,9 @@
     (google-translate . "http://translate.google.com/?source=osdd#auto|auto|%s")
     (google-translate-en-ja . "http://translate.google.com/?source=osdd#en|ja|%s")
     (google-translate-ja-en . "http://translate.google.com/?source=osdd#ja|en|%s")
-    (grabcad . "https://grabcad.com/library?per_page=20&query=%s")
     (hackage . "http://hackage.haskell.org/package/%s")
     (hayoo . "http://holumbus.fh-wedel.de/hayoo/hayoo.html?query=%s")
     (hdiff . "http://hdiff.luite.com/cgit/%s")
-    (instagram-account . "https://www.instagram.com/$s")
-    (instagram-tags . "https://www.instagram.com/explore/tags/%s")
     (jisho-org . "http://jisho.org/search/%s")
     (koji . "http://koji.fedoraproject.org/koji/search?match=glob&type=package&terms=%s")
     (melpa . "http://melpa.org/#/%s")
@@ -104,22 +101,17 @@
     (readthedocs-org . "https://readthedocs.org/search/?q=%s")
     (slashdot . "http://www.osdn.com/osdnsearch.pl?site=Slashdot&query=%s")
     (startpage . "https://startpage.com/do/search?cat=web&query=%s")
-    (stackexchange-emacs . "http://emacs.stackexchange.com/search?q=%s")
-    (starwars-wikia . "http://starwars.wikia.com/wiki/Special:Search?search=%s&go=&fulltext=Search")
-    (twitter-hashtag . "https://twitter.com/hashtag/%s")
-    (twitter-search . "https://twitter.com/search?q=%s&src=typd")
     (ubupkg . "http://packages.ubuntu.com/search?keywords=%s")
     (weblio-en-ja . "http://ejje.weblio.jp/content/%s")
-    (whotwi-ar . "http://ar.whotwi.com/%s")
-    (whotwi-en . "http://en.whotwi.com/%s")
-    (whotwi-ja . "http://ja.whotwi.com/%s")
     (wikipedia . "http://en.wikipedia.org/wiki/%s")
     (wikipedia-ja . "http://ja.wikipedia.org/wiki/%s")
     (yahoo . "http://search.yahoo.com/search?p=%s")
     (youtube . "http://www.youtube.com/results?search_query=%s")
     )
   "An alist of pairs (KEYWORD . URL) where KEYWORD is a keyword symbol \
-and URL string including '%s' is the search url."
+and URL string including '%s' is the search url.
+
+\"%\" should be replaced with \"%%\"."
   :type '(alist
 	  :key-type (symbol :tag "Name")
 	  :value-type (string :tag "URL"))

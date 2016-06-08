@@ -5,8 +5,10 @@
     - [Installation](#installation)
     - [Basic Configuration](#basic-configuration)
     - [Usage](#usage)
-    - [keyword-search-extra-mode](#keyword-search-extra-mode)
-    - [keyword-search-dessert-stomach-mode](#keyword-search-dessert-stomach-mode)
+    - [Modes](#modes)
+        - [keyword-search-extra-mode](#keyword-search-extra-mode)
+        - [keyword-search-mad-mode](#keyword-search-mad-mode)
+        - [keyword-search-dessert-stomach-mode](#keyword-search-dessert-stomach-mode)
     - [Demo Video](#demo-video)
 
 <!-- markdown-toc end -->
@@ -49,8 +51,10 @@ Usage
 2. Choose search engine. <kbd>[TAB]</kbd> will autocomplete it.
 3. Search query will be read from symbol at point, region or string in the minibuffer.
 
-keyword-search-extra-mode
--------------------------
+Modes
+-----
+
+### keyword-search-extra-mode
 
 Mode for an alist of extra language services.
 There are so many languages that it will be late at load time
@@ -61,8 +65,15 @@ Toggle ON/OFF:
 
 * <kbd>M-x keyword-search-extra-mode [RET]</kbd>
 
-keyword-search-dessert-stomach-mode
------------------------------------
+### keyword-search-mad-mode
+
+Mode for additional websites where experts or manias only use.
+
+Toggle ON/OFF:
+
+* <kbd>M-x keyword-search-mad-mode [RET]</kbd>
+
+### keyword-search-dessert-stomach-mode
 
 User-customizable mode.
 
@@ -106,7 +117,7 @@ User-customizable mode.
 (keyword-search-dessert-stomach-mode t)
 ```
 
-If you want to toggle ON/OFF this mode, please append functions
+If you want to turn ON/OFF this mode, please append functions
 to `keyword-search-dessert-stomach-mode-toggle-hook`:
 
 ```lisp
