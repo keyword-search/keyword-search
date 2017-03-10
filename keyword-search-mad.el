@@ -569,6 +569,7 @@ Don't turn on this mode unless you choose to be mad."
 		  (santa-fe-institute . "http://www.santafe.edu/search/results/?query=%s")
 		  (sciencemag . "http://www.sciencemag.org/search/%s")
 		  (serverfault . "http://serverfault.com/search?q=%s")
+		  (slideshare . "https://www.slideshare.net/search/slideshow?searchfrom=header&q=%s")
 		  (stackapps . "http://stackapps.com/search?q=%s")
 		  (stackoverflow . "http://stackoverflow.com/search?q=%s")
 		  (starwars-wikia . "http://starwars.wikia.com/wiki/Special:Search?search=%s&go=&fulltext=Search")
