@@ -61,6 +61,8 @@ Don't turn on this mode unless you choose to be mad."
    (let (
 	 (alist '(
 		  ("cookpad-%s" . "https://cookpad.com/%s/%%s?ref=search.suggestion")
+		  ("instagram-account-%s" . "https://www.instagram.com/%%s/?hl=%s")
+		  ("instagram-tags-%s" . "https://www.instagram.com/explore/tags/%%s/?hl=%s")
 		  ("stackexchange-%s" . "http://%s.stackexchange.com/search?q=%%s")
 		  ("stackoverflow-%s" . "http://%s.stackoverflow.com/search?q=%%s")
 		  ("wikibooks-%s" . "https://%s.wikibooks.org/wiki/%%s")
@@ -70,35 +72,140 @@ Don't turn on this mode unless you choose to be mad."
 		  ("wiktionary-%s" . "https://%s.wiktionary.org/wiki/%%s")
 		  ))
 	 (cookpad-locale '(
+			   "ae/search"
 			   "ar/buscar"
 			   "arabic/search"
+			   "bh/search"
 			   "bo/buscar"
+			   "br/busca/"
 			   "cl/buscar"
 			   "co/buscar"
 			   "cr/buscar"
 			   "cu/buscar"
+			   "dj/search"
+			   "dk/search"
 			   "do/buscar"
+			   "dz/search"
 			   "ec/buscar"
 			   "eeuu/buscar"
+			   "eg/search"
 			   "es/buscar"
+			   "fr/recherche"
+			   "gr/anazitisi"
 			   "gt/buscar"
 			   "hn/buscar"
+			   "hu/kereses"
 			   "id/cari"
+			   "in/search"
+			   "iq/search"
+			   "it/cerca/"
+			   "jo/search"
+			   "ke/search"
+			   "km/search"
+			   "kw/search"
+			   "lb/search"
+			   "ly/search"
+			   "ma/search"
+			   "mr/search"
 			   "mx/buscar"
+			   "ng/search"
 			   "ni/buscar"
+			   "om/search"
 			   "pa/buscar"
 			   "pe/buscar"
 			   "ph/i-search"
+			   "pl/wyszukaj"
 			   "pri/buscar"
+			   "ps/search"
 			   "py/buscar"
+			   "qa/search"
+			   "ru/search"
+			   "sa/search"
+			   "sd/search"
+			   "so/search"
 			   "sv/buscar"
+			   "sy/search"
 			   "th/search"
+			   "tn/search"
+			   "tw/搜尋"
 			   "uk/search"
 			   "us/search"
 			   "uy/buscar"
 			   "ve/buscar"
 			   "vn/tim-kiem"
+			   "ye/search"
+			   "za/search"
 			   ))
+	 (instagram-locale '(
+			     "x-default"
+			     "en"
+			     "fr"
+			     "it"
+			     "de"
+			     "es"
+			     "zh-cn"
+			     "zh-tw"
+			     "ja"
+			     "ko"
+			     "pt"
+			     "pt-br"
+			     "af"
+			     "cs"
+			     "da"
+			     "el"
+			     "fi"
+			     "hr"
+			     "hu"
+			     "id"
+			     "ms"
+			     "nb"
+			     "nl"
+			     "pl"
+			     "ru"
+			     "sk"
+			     "sv"
+			     "th"
+			     "tl"
+			     "tr"
+			     "hi"
+			     "bn"
+			     "gu"
+			     "kn"
+			     "ml"
+			     "mr"
+			     "pa"
+			     "ta"
+			     "te"
+			     "ne"
+			     "si"
+			     "ur"
+			     "vi"
+			     "bg"
+			     "fr-ca"
+			     "ro"
+			     "sr"
+			     "uk"
+			     "zh-hk"
+			     "es-cl"
+			     "es-cu"
+			     "es-sv"
+			     "es-py"
+			     "es-pe"
+			     "es-mx"
+			     "es-ve"
+			     "es-cr"
+			     "es-bo"
+			     "es-do"
+			     "es-ec"
+			     "es-gt"
+			     "es-uy"
+			     "es-pr"
+			     "es-ar"
+			     "es-co"
+			     "es-ni"
+			     "es-hn"
+			     "es-pa"
+			     ))
 	 (stackexchange-service '(
 				  "3dprinting"
 				  "academia"
@@ -555,13 +662,12 @@ Don't turn on this mode unless you choose to be mad."
 		  (cinii-en . "http://ci.nii.ac.jp/search?lang=en&q=%s&range=0&sortorder=1&start=1&count=20")
 		  (cinii-ja . "http://ci.nii.ac.jp/search?lang=ja&q=%s&range=0&sortorder=1&start=1&count=20")
 		  (grabcad . "https://grabcad.com/library?per_page=20&query=%s")
-		  (instagram-account . "https://www.instagram.com/$s")
-		  (instagram-tags . "https://www.instagram.com/explore/tags/%s")
 		  (j-stage-en . "https://www.jstage.jst.go.jp/result?item1=4&word1=%s")
 		  (j-stage-ja . "https://www.jstage.jst.go.jp/result/-char/ja/?item1=4&word1=%s")
 		  (mathoverflow . "http://mathoverflow.net/search?q=%s")
 		  (nature . "http://www.nature.com/search?journal=nature%%2Cnews&q=%s")
 		  (nhkworld . "http://www2.nhk.or.jp/nhkworld/en/search/?qt=%s&charset=utf-8&lk=1&la=en&qi=3&col=nhkworld")
+		  (opendatanetwork . "https://www.opendatanetwork.com/search?q=%s")
 		  (pmc . "http://www.ncbi.nlm.nih.gov/pmc/?term=%s")
 		  (pubmed . "http://www.ncbi.nlm.nih.gov/pubmed/?term=%s")
 		  (rfc-number . "https://www.rfc-editor.org/search/rfc_search_detail.php?rfc=%s&pubstatus[]=Any&pub_date_type=any")
@@ -592,6 +698,22 @@ Don't turn on this mode unless you choose to be mad."
 	 (cond
 	  ((string-equal car-element "cookpad-%s")
 	   (dolist (l cookpad-locale value)
+	     (setq value (add-to-list 'value
+				      (cons
+				       (intern
+					(format car-element l))
+				       (format cdr-element l))
+				      t))))
+	  ((string-equal car-element "instagram-account-%s")
+	   (dolist (l instagram-locale value)
+	     (setq value (add-to-list 'value
+				      (cons
+				       (intern
+					(format car-element l))
+				       (format cdr-element l))
+				      t))))
+	  ((string-equal car-element "instagram-tags-%s")
+	   (dolist (l instagram-locale value)
 	     (setq value (add-to-list 'value
 				      (cons
 				       (intern

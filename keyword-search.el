@@ -85,7 +85,7 @@
     (google-lucky . "http://www.google.com/search?btnI=I%%27m+Feeling+Lucky&q=%s")
     (google-images . "http://images.google.com/images?sa=N&tab=wi&q=%s")
     (google-groups . "http://groups.google.com/groups?q=%s")
-    (google-directory . "http://www.google.com/search?&sa=N&cat=gwd/Top&tab=gd&q=%s")
+    ;; (google-directory . "http://www.google.com/search?&sa=N&cat=gwd/Top&tab=gd&q=%s")
     (google-news . "http://news.google.com/news?sa=N&tab=dn&q=%s")
     (google-scholar . "https://scholar.google.com/scholar?q=%s")
     (google-translate . "http://translate.google.com/?source=osdd#auto|auto|%s")
@@ -128,7 +128,7 @@ if none given."
 
 (defun keyword-search-get-query ()
   "Return the selected region (if any) or the symbol at point.
-This function was copied from `engine-mode.el'."
+This function is based on `engine-mode.el'."
   (if (use-region-p)
       (let (
 	    (r-list
@@ -207,6 +207,17 @@ search query in a single input as argument TEXT from the minibuffer."
 		    keyword-search-default)))
     (keyword-search (intern-soft keyword)
 		    (combine-and-quote-strings (if keywordp (cdr words) words)))))
+
+;;;###autoload
+(defun keyword-search-quick-additionally (text)
+  "In addition to a query of `keyword-search-get-query', \
+read a string TEXT from the minibuffer.
+
+This is a wrapper of `keyword-search-quick'"
+  (interactive
+   (list (let ((thing (keyword-search-get-query)))
+	   (read-string "Keyword search quick additionally: " thing))))
+  (keyword-search-quick text))
 
 (provide 'keyword-search)
 ;;; keyword-search.el ends here
